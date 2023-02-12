@@ -39,12 +39,21 @@ public class Main {
     System.out.println("Сумма чётных чисел в последовательности: " + summator.getEvenSum());
     System.out.println("Сумма нечётных чисел в последовательности: " + summator.getOddSum());
 
-    try (PrintWriter writer = new PrintWriter("output.txt")) {
-      // Перехват события
-      writer.println("Сумма чётных чисел в последовательности: " + summator.getEvenSum());
-      writer.println("Сумма нечётных чисел в последовательности: " + summator.getOddSum());
-    } catch (FileNotFoundException e) {
-      System.out.println("Файл не найден!");
+    try (BufferedReader br = new BufferedReader(new FileReader("input.txt"))) {
+      // Пропускаем 1-ю строку
+      br.readLine();
+      // Читаем 2-ю строку
+      String filePath = br.readLine();
+
+      try (PrintWriter writer = new PrintWriter(filePath)) {
+        // Перехват события
+        writer.println("Сумма чётных чисел в последовательности: " + summator.getEvenSum());
+        writer.println("Сумма нечётных чисел в последовательности: " + summator.getOddSum());
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException();
     }
   }
 }
