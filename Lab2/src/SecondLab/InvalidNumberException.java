@@ -1,8 +1,9 @@
 package SecondLab;
 
-public class InvalidNumberException extends Exception {
+// Исключение при валидации чисел
+public class InvalidNumberException extends Exception implements MyConstants {
 
-  public InvalidNumberException(String message) {
-    super(message);
+  public String toString() {
+    return "ОШИБКА: В последовательности есть число, которое меньше некоторого числа " + MIN_VALUE;
   }
 }
