@@ -13,7 +13,7 @@ public class UDPClient {
     System.out.println("Клиент запущен");
 
     // Отправка запроса на сервер
-    String message = "Привет от клиента!";
+    String message = "int,0,0,42"; // пример сообщения для установки значения 42 в ячейку [0][0]
     byte[] sendData = message.getBytes();
     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress,
         serverPort);
