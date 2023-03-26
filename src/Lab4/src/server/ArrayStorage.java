@@ -1,3 +1,5 @@
+package server;
+
 public class ArrayStorage {
 
   private int[][] intArray;
