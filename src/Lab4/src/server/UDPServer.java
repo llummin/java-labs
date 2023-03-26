@@ -1,11 +1,16 @@
 package server;
 
 import java.io.IOException;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+
+import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -14,8 +19,12 @@ public class UDPServer {
   private static final Logger logger = Logger.getLogger("server.log");
 
   public static void main(String[] args) throws IOException {
-    // Создание сокета для приема данных на порту 2345
-    DatagramSocket serverSocket = new DatagramSocket(2500);
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Введите номер порта: ");
+    int serverPort = scanner.nextInt();
+    scanner.close();
+
+    DatagramSocket serverSocket = new DatagramSocket(serverPort);
     System.out.println("Сервер запущен!");
 
     // Создание объекта для хранения трех двумерных массивов
@@ -30,6 +39,29 @@ public class UDPServer {
     fileHandler.setFormatter(formatter);
     logger.addHandler(fileHandler);
 
+    logger.setLevel(Level.FINE);
+    ConsoleHandler consoleHandler = new ConsoleHandler();
+    consoleHandler.setFormatter(formatter);
+
+    // Настройка цветов логов в консоли
+    consoleHandler.setLevel(Level.FINE);
+    consoleHandler.setFormatter(new SimpleFormatter() {
+      private static final String GREEN = "\u001B[32m";
+      private static final String RESET = "\u001B[0m";
+
+      @Override
+      public String format(LogRecord record) {
+        String message = super.format(record);
+        if (record.getLevel() == Level.FINE) {
+          return GREEN + message + RESET;
+        }
+        return message;
+      }
+    });
+
+    // Добавление консольного обработчика
+    logger.addHandler(consoleHandler);
+
     while (true) {
       // Создание буфера для приема пакета данных
       byte[] receiveData = new byte[1024];
@@ -42,7 +74,7 @@ public class UDPServer {
 
       // Получение данных из пакета
       String receivedMessage = new String(receivePacket.getData()).trim();
-      logger.log(Level.INFO, "Получено сообщение от клиента: " + receivedMessage);
+      logger.log(Level.FINE, "Получено сообщение от клиента: " + receivedMessage);
 
       // Обработка полученного сообщения
       String[] tokens = receivedMessage.split(",");
@@ -57,27 +89,27 @@ public class UDPServer {
       if (tokens[0].equalsIgnoreCase("int")) {
         // Установка значения элемента в массиве intArray
         data.setIntCell(i, j, Integer.parseInt(value));
-        logger.log(Level.INFO,
+        logger.log(Level.FINE,
             "Установлено значение " + value + " в ячейку [" + i + "][" + j + "] массива intArray");
 
       } else if (tokens[0].equalsIgnoreCase("double")) {
         // Установка значения элемента в массиве doubleArray
         data.setDoubleCell(i, j, Double.parseDouble(value));
-        logger.log(Level.INFO,
+        logger.log(Level.FINE,
             "Установлено значение " + value + " в ячейку [" + i + "][" + j
                 + "] массива doubleArray");
 
       } else if (tokens[0].equalsIgnoreCase("string")) {
         // Установка значения элемента в массиве stringArray
         data.setStringCell(i, j, value);
-        logger.log(Level.INFO,
+        logger.log(Level.FINE,
             "Установлено значение " + value + " в ячейку [" + i + "][" + j
                 + "] массива stringArray");
 
       } else if (tokens[0].equalsIgnoreCase("protected")) {
         // Установка защищенного значения
         protectedAreas.setCellProtected(i, j, Integer.parseInt(value), true);
-        logger.log(Level.INFO,
+        logger.log(Level.FINE,
             "Установлено защищенное значение " + value + " в ячейку [" + i + "][" + j + "]");
       } else {
         logger.log(Level.WARNING, "Некорректный тип данных в сообщении от клиента!");

@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -38,6 +42,29 @@ public class UDPClient {
     SimpleFormatter formatter = new SimpleFormatter();
     fileHandler.setFormatter(formatter);
     logger.addHandler(fileHandler);
+
+    logger.setLevel(Level.FINE);
+    ConsoleHandler consoleHandler = new ConsoleHandler();
+    consoleHandler.setFormatter(formatter);
+
+    // Настройка цветов логов в консоли
+    consoleHandler.setLevel(Level.FINE);
+    consoleHandler.setFormatter(new SimpleFormatter() {
+      private static final String GREEN = "\u001B[32m";
+      private static final String RESET = "\u001B[0m";
+
+      @Override
+      public String format(LogRecord record) {
+        String message = super.format(record);
+        if (record.getLevel() == Level.FINE) {
+          return GREEN + message + RESET;
+        }
+        return message;
+      }
+    });
+
+    // Добавление консольного обработчика
+    logger.addHandler(consoleHandler);
   }
 
   public void sendRequest(String request) throws IOException {
@@ -45,7 +72,7 @@ public class UDPClient {
     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress,
         serverPort);
     clientSocket.send(sendPacket);
-    logger.log(Level.INFO, "Отправлено сообщение на сервер: " + request);
+    logger.log(Level.FINE, "Отправлено сообщение на сервер: " + request);
   }
 
   public String receiveResponse() throws IOException {
@@ -53,7 +80,7 @@ public class UDPClient {
     DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     clientSocket.receive(receivePacket);
     String receivedMessage = new String(receivePacket.getData()).trim();
-    logger.log(Level.INFO, "Получено сообщение от сервера: " + receivedMessage);
+    logger.log(Level.FINE, "Получено сообщение от сервера: " + receivedMessage);
     return receivedMessage;
   }
 

@@ -12,7 +12,6 @@ public class Data {
     this.doubleData = doubleData;
     this.stringData = stringData;
     this.protectedAreas = new ProtectedAreas(10, 10, 5);
-
   }
 
   public void setProtectedAreas(ProtectedAreas protectedAreas) {
