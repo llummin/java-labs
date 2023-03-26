@@ -29,6 +29,7 @@ public class UDPClient {
     BufferedReader reader = new BufferedReader(new FileReader(configFile));
     String serverAddressStr = reader.readLine();
     serverPort = Integer.parseInt(reader.readLine());
+    String logFileName = reader.readLine();
     reader.close();
 
     // Создание объекта InetAddress и настройка сокета клиента
@@ -37,7 +38,6 @@ public class UDPClient {
     System.out.println("Клиент запущен!");
 
     // Настройка логирования
-    String logFileName = "src/Lab4/src/client/client.log";
     FileHandler fileHandler = new FileHandler(logFileName, true);
     SimpleFormatter formatter = new SimpleFormatter();
     fileHandler.setFormatter(formatter);
@@ -72,7 +72,7 @@ public class UDPClient {
     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress,
         serverPort);
     clientSocket.send(sendPacket);
-    logger.log(Level.FINE, "Отправлено сообщение на сервер: " + request);
+    System.out.println("Отправлено сообщение на сервер: " + request);
   }
 
   public String receiveResponse() throws IOException {
@@ -88,20 +88,50 @@ public class UDPClient {
     clientSocket.close();
   }
 
+  private static void showMenu(BufferedReader reader, UDPClient client) throws IOException {
+    while (true) {
+      System.out.println("Выберите тип массива:");
+      System.out.println("1 - целочисленный");
+      System.out.println("2 - вещественный");
+      System.out.println("3 - строковый");
+
+      int arrayType = Integer.parseInt(reader.readLine());
+
+      System.out.print("Введите индекс строки: ");
+      int rowIndex = Integer.parseInt(reader.readLine());
+
+      System.out.print("Введите индекс столбца: ");
+      int columnIndex = Integer.parseInt(reader.readLine());
+
+      System.out.print("Введите значение: ");
+      String value = reader.readLine();
+
+      String request = arrayType + "," + rowIndex + "," + columnIndex + "," + value;
+      client.sendRequest(request);
+
+      String response = client.receiveResponse();
+      System.out.println("Ответ сервера: " + response);
+
+      System.out.println("Хотите продолжить? (да/нет)");
+      String answer = reader.readLine();
+      while (!answer.equals("да") && !answer.equals("нет")) {
+        System.out.println("Некорректный ответ, введите 'да' или 'нет':");
+        answer = reader.readLine();
+      }
+      if (answer.equals("нет")) {
+        break;
+      }
+    }
+  }
+
+
   public static void main(String[] args) {
     try {
       UDPClient client = new UDPClient("src/Lab4/src/config.txt");
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-      String input;
-      do {
-        System.out.println("Введите запрос (или 'exit' для выхода):");
-        input = reader.readLine();
-        client.sendRequest(input);
-        String response = client.receiveResponse();
-        System.out.println("Ответ сервера: " + response);
-      } while (!input.equals("exit"));
+      showMenu(reader, client);
 
       client.close();
     } catch (IOException e) {
