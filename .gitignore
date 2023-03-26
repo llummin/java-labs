@@ -21,6 +21,7 @@ build/
 
 # Logs
 *.log
+/src/Lab4/src/config.txt
 
 # Eclipse-specific
 *.project

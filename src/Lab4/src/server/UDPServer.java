@@ -24,7 +24,7 @@ public class UDPServer {
     // Создание объекта для хранения защищенных ячеек
     ProtectedAreas protectedAreas = new ProtectedAreas(3, 4, 5);
 
-    String logFileName = "src/Lab4/src/server/logs/server.log";
+    String logFileName = "src/Lab4/src/server/server.log";
     FileHandler fileHandler = new FileHandler(logFileName, true);
     SimpleFormatter formatter = new SimpleFormatter();
     fileHandler.setFormatter(formatter);
