@@ -1,3 +1,5 @@
+package server;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -6,11 +8,11 @@ import java.net.InetAddress;
 public class UDPServer {
 
   public static void main(String[] args) throws IOException {
-// Создание сокета для приема данных на порту 2345
+    // Создание сокета для приема данных на порту 2345
     DatagramSocket serverSocket = new DatagramSocket(2345);
     System.out.println("Сервер запущен!");
     // Создание объекта для хранения трех двумерных массивов
-    ArrayStorage arrayStorage = new ArrayStorage(new int[10][10], new double[5][5],
+    Data data = new Data(new int[10][10], new double[5][5],
         new String[8][8]);
 
     while (true) {
@@ -39,17 +41,17 @@ public class UDPServer {
 
       if (tokens[0].equalsIgnoreCase("int")) {
         // Установка значения элемента в массиве intArray
-        arrayStorage.setIntValue(i, j, Integer.parseInt(value));
+        data.setIntCell(i, j, Integer.parseInt(value));
         System.out.println(
             "Установлено значение " + value + " в ячейку [" + i + "][" + j + "] массива intArray");
       } else if (tokens[0].equalsIgnoreCase("double")) {
         // Установка значения элемента в массиве doubleArray
-        arrayStorage.setDoubleValue(i, j, Double.parseDouble(value));
+        data.setDoubleCell(i, j, Double.parseDouble(value));
         System.out.println("Установлено значение " + value + " в ячейку [" + i + "][" + j
             + "] массива doubleArray");
       } else if (tokens[0].equalsIgnoreCase("string")) {
         // Установка значения элемента в массиве stringArray
-        arrayStorage.setStringValue(i, j, value);
+        data.setStringCell(i, j, value);
         System.out.println("Установлено значение " + value + " в ячейку [" + i + "][" + j
             + "] массива stringArray");
       } else {
