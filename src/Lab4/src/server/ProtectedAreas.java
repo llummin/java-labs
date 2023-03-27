@@ -4,8 +4,8 @@ public class ProtectedAreas {
 
   private final boolean[][][] protectedCells;
 
-  public ProtectedAreas(int size1, int size2, int size3) {
-    protectedCells = new boolean[size1][size2][size3];
+  public ProtectedAreas(int rows, int columns) {
+    protectedCells = new boolean[3][rows][columns];
   }
 
   public boolean isCellProtected(int arrayNumber, int rowIndex, int columnIndex) {
@@ -14,10 +14,16 @@ public class ProtectedAreas {
 
   public void setCellProtected(
       int arrayNumber,
-      int rowIndex,
-      int columnIndex,
+      int startRow,
+      int startCol,
+      int endRow,
+      int endCol,
       boolean isProtected
   ) {
-    protectedCells[arrayNumber][rowIndex][columnIndex] = isProtected;
+    for (int i = startRow; i <= endRow; i++) {
+      for (int j = startCol; j <= endCol; j++) {
+        protectedCells[arrayNumber][i][j] = isProtected;
+      }
+    }
   }
 }

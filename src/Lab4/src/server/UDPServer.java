@@ -19,6 +19,16 @@ public class UDPServer {
   private static final Logger logger = Logger.getLogger("server.log");
 
   public static void main(String[] args) throws IOException {
+    // Создание объекта для хранения трех двумерных массивов
+    Data data = new Data(new int[10][10], new double[10][10], new String[10][10]);
+
+    // Установка защищенных областей массивов из командной строки
+    ProtectedAreas protectedAreas = new ProtectedAreas(100, 100);
+    data.setProtectedAreasFromCommandLine(args);
+
+    // Установка объекта защищенных областей в объект данных
+    data.setProtectedAreas(protectedAreas);
+
     Scanner scanner = new Scanner(System.in);
     System.out.print("Введите путь к файлу логов: "); // src/Lab4/src/server/server.log
     String logFileName = scanner.nextLine();
@@ -28,12 +38,6 @@ public class UDPServer {
 
     DatagramSocket serverSocket = new DatagramSocket(serverPort);
     System.out.println("Сервер запущен!");
-
-    // Создание объекта для хранения трех двумерных массивов
-    Data data = new Data(new int[10][10], new double[5][5], new String[8][8]);
-
-    // Создание объекта для хранения защищенных ячеек
-    ProtectedAreas protectedAreas = new ProtectedAreas(3, 4, 5);
 
     FileHandler fileHandler = new FileHandler(logFileName, true);
     SimpleFormatter formatter = new SimpleFormatter();
@@ -87,29 +91,23 @@ public class UDPServer {
       int j = Integer.parseInt(tokens[2]);
       String value = tokens[3];
 
-      if (tokens[0].equalsIgnoreCase("1")) {
+      if (tokens[0].equalsIgnoreCase("0")) {
         // Установка значения элемента в массиве intArray
         data.setIntCell(i, j, Integer.parseInt(value));
         System.out.println(
             "Установлено значение " + value + " в ячейку [" + i + "][" + j + "] массива intArray");
 
-      } else if (tokens[0].equalsIgnoreCase("2")) {
+      } else if (tokens[0].equalsIgnoreCase("1")) {
         // Установка значения элемента в массиве doubleArray
         data.setDoubleCell(i, j, Double.parseDouble(value));
         System.out.println("Установлено значение " + value + " в ячейку [" + i + "][" + j
             + "] массива doubleArray");
 
-      } else if (tokens[0].equalsIgnoreCase("3")) {
+      } else if (tokens[0].equalsIgnoreCase("2")) {
         // Установка значения элемента в массиве stringArray
         data.setStringCell(i, j, value);
         System.out.println("Установлено значение " + value + " в ячейку [" + i + "][" + j
             + "] массива stringArray");
-
-      } else if (tokens[0].equalsIgnoreCase("protected")) {
-        // Установка защищенного значения
-        protectedAreas.setCellProtected(i, j, Integer.parseInt(value), true);
-        System.out.println(
-            "Установлено защищенное значение " + value + " в ячейку [" + i + "][" + j + "]");
       } else {
         logger.log(Level.WARNING, "Некорректный тип данных в сообщении от клиента!");
         continue;

@@ -91,9 +91,9 @@ public class UDPClient {
   private static void showMenu(BufferedReader reader, UDPClient client) throws IOException {
     while (true) {
       System.out.println("Выберите тип массива:");
-      System.out.println("1 - целочисленный");
-      System.out.println("2 - вещественный");
-      System.out.println("3 - строковый");
+      System.out.println("0 - целочисленный");
+      System.out.println("1 - вещественный");
+      System.out.println("2 - строковый");
 
       int arrayType = Integer.parseInt(reader.readLine());
 
