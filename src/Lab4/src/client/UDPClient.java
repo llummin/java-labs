@@ -10,12 +10,12 @@ public class UDPClient {
   public static void main(String[] args) throws IOException {
     // Создание сокета для отправки данных на адрес и порт сервера
     InetAddress serverAddress = InetAddress.getByName("localhost");
-    int serverPort = 2345;
+    int serverPort = 2500;
     DatagramSocket clientSocket = new DatagramSocket();
     System.out.println("Клиент запущен");
 
     // Отправка запроса на сервер
-    String message = "int,0,0,42"; // пример сообщения для установки значения 42 в ячейку [0][0]
+    String message = "int,0,0,43"; // пример сообщения для установки значения 42 в ячейку [0][0]
     byte[] sendData = message.getBytes();
     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress,
         serverPort);
