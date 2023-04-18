@@ -124,15 +124,12 @@ public class UDPClient {
     }
   }
 
-
   public static void main(String[] args) {
     try {
       UDPClient client = new UDPClient("src/Lab4/src/config.txt");
-
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
       showMenu(reader, client);
-
       client.close();
     } catch (IOException e) {
       System.err.println("Ошибка при работе с клиентом: " + e.getMessage());

@@ -20,14 +20,7 @@ public class UDPServer {
 
   public static void main(String[] args) throws IOException {
     // Создание объекта для хранения трех двумерных массивов
-    Data data = new Data(new int[10][10], new double[10][10], new String[10][10]);
-
-    // Установка защищенных областей массивов из командной строки
-    ProtectedAreas protectedAreas = new ProtectedAreas(100, 100);
-    data.setProtectedAreasFromCommandLine(args);
-
-    // Установка объекта защищенных областей в объект данных
-    data.setProtectedAreas(protectedAreas);
+    Data data = new Data(new int[100][100], new double[100][100], new String[100][100]);
 
     Scanner scanner = new Scanner(System.in);
     System.out.print("Введите путь к файлу логов: "); // src/Lab4/src/server/server.log
