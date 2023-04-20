@@ -1,6 +1,10 @@
-package SecondLab;
+package secondlab;
 
-public interface MyFunctions {
+import secondlab.exceptions.InvalidLengthException;
+import secondlab.exceptions.InvalidNumberException;
+import secondlab.exceptions.InvalidSymbolException;
+
+public interface Functions {
 
   // Метод, возвращающий сумму чётных чисел
   int getEvenSum();

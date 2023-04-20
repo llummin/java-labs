@@ -1,10 +1,16 @@
-package SecondLab;
+package secondlab;
 
-class Work implements MyConstants, MyFunctions {
+import static java.lang.System.*;
 
-  public int evenSum;
-  public int oddSum;
-  public int[] numbers;
+import secondlab.exceptions.InvalidLengthException;
+import secondlab.exceptions.InvalidNumberException;
+import secondlab.exceptions.InvalidSymbolException;
+
+class SequenceSum implements Constants, Functions {
+
+  private int evenSum;
+  private int oddSum;
+  private int[] numbers;
 
 
   @Override
@@ -51,16 +57,16 @@ class Work implements MyConstants, MyFunctions {
   public static class Main {
 
     public static void main(String[] args) {
-      Work work = new Work();
+      SequenceSum sequenceSum = new SequenceSum();
       try {
-        work.setNumbers(args);
+        sequenceSum.setNumbers(args);
       } catch (InvalidLengthException | InvalidNumberException | InvalidSymbolException e) {
-        System.out.println(e);
+        e.printStackTrace();
         return;
       }
-      work.calculateSum();
-      System.out.println("Сумма чётных чисел в последовательности: " + work.getEvenSum());
-      System.out.println("Сумма нечётных чисел в последовательности: " + work.getOddSum());
+      sequenceSum.calculateSum();
+      out.println("Сумма чётных чисел в последовательности: " + sequenceSum.getEvenSum());
+      out.println("Сумма нечётных чисел в последовательности: " + sequenceSum.getOddSum());
     }
   }
 }
