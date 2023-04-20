@@ -1,5 +1,7 @@
 package server;
 
+import static java.lang.System.*;
+
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,8 +21,8 @@ public class ComputeEngine implements Compute {
   }
 
   public static void main(String[] args) {
-    if (System.getSecurityManager() == null) {
-      System.setSecurityManager(new SecurityManager());
+    if (getSecurityManager() == null) {
+      setSecurityManager(new SecurityManager());
     }
     try {
       String name = "Compute";
@@ -28,9 +30,9 @@ public class ComputeEngine implements Compute {
       Compute stub = (Compute) UnicastRemoteObject.exportObject(engine, 0);
       Registry registry = LocateRegistry.getRegistry();
       registry.rebind(name, stub);
-      System.out.println("ComputeEngine bound");
+      out.println("ComputeEngine bound");
     } catch (Exception e) {
-      System.err.println("ComputeEngine exception:");
+      err.println("ComputeEngine exception:");
       e.printStackTrace();
     }
   }

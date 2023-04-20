@@ -1,5 +1,7 @@
 package client;
 
+import static java.lang.System.*;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -8,6 +10,9 @@ import interfaces.Compute;
 public class ComputeTask {
 
   public static void main(String[] args) {
+    if (System.getSecurityManager() == null) {
+      System.setSecurityManager(new SecurityManager());
+    }
     try {
       String name = "Compute";
       Registry registry = LocateRegistry.getRegistry(args[0]);
@@ -20,10 +25,10 @@ public class ComputeTask {
       Integer[] results = (Integer[]) comp.executeTask(task);
 
       // Выводим результаты
-      System.out.println("Сумма чётных чисел в последовательности: " + results[0]);
-      System.out.println("Сумма нечётных чисел в последовательности: " + results[1]);
+      out.println("Сумма чётных чисел в последовательности: " + results[0]);
+      out.println("Сумма нечётных чисел в последовательности: " + results[1]);
     } catch (Exception e) {
-      System.err.println("ComputePi exception:");
+      err.println("ComputePi exception:");
       e.printStackTrace();
     }
   }
