@@ -11,6 +11,6 @@ public class FileOutputSource {
   }
 
   public void generateEvent() {
-    fileOutput.Handler();
+    fileOutput.handler();
   }
 }

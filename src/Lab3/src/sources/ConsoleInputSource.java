@@ -11,6 +11,6 @@ public class ConsoleInputSource {
   }
 
   public void generateEvent() {
-    consoleInput.Handler();
+    consoleInput.handler();
   }
 }

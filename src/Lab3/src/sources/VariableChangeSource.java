@@ -11,6 +11,6 @@ public class VariableChangeSource {
   }
 
   public void generateEvent() {
-    variableChange.Handler();
+    variableChange.handler();
   }
 }

@@ -1,3 +1,5 @@
+import static java.lang.System.*;
+
 import java.io.*;
 import java.util.Scanner;
 import receivers.*;
@@ -5,6 +7,8 @@ import sources.*;
 
 public class SumOfEvenAndOdd {
 
+  private static final String SUM_OF_EVEN_NUMBERS = "Сумма чётных чисел в последовательности: ";
+  private static final String SUM_OF_ODD_NUMBERS = "Сумма нечётных чисел в последовательности: ";
   private int sumEven;
   private int sumOdd;
   private final FileOutputReceiver fileOutputReceiver;
@@ -36,54 +40,73 @@ public class SumOfEvenAndOdd {
   }
 
   public void setInputFromConsole() {
-    Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(in);
     consoleInputSource.generateEvent();
-    System.out.print("Введите последовательность чисел, разделённых пробелами: ");
+    out.print("Введите последовательность чисел, разделённых пробелами: ");
     String[] input = scanner.nextLine().split(" ");
     calculate(input);
   }
 
   public void setInputFromFile() throws IOException {
-    BufferedReader reader = new BufferedReader(new FileReader("input.txt"));
-    String[] input = reader.readLine().split(" ");
-    String outputFilePath = reader.readLine();
-    reader.close();
-    calculate(input);
+    String outputFilePath;
+    try (BufferedReader reader = new BufferedReader(new FileReader("input.txt"))) {
+      String[] input = reader.readLine().split(" ");
+      outputFilePath = reader.readLine();
+      calculate(input);
+    }
     fileOutputSource = new FileOutputSource(fileOutputReceiver);
     fileOutputSource.generateEvent();
-    PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, false));
-    writer.println("Сумма чётных чисел в последовательности: " + sumEven);
-    writer.println("Сумма нечётных чисел в последовательности: " + sumOdd);
-    writer.close();
+    try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilePath, false))) {
+      writer.println(SUM_OF_EVEN_NUMBERS + sumEven);
+      writer.println(SUM_OF_ODD_NUMBERS + sumOdd);
+    }
   }
 
-  public void printResult() {
-    System.out.println("Сумма чётных чисел в последовательности: " + sumEven);
-    System.out.println("Сумма нечётных чисел в последовательности: " + sumOdd);
+  public void printResult() throws IOException {
+    out.println(SUM_OF_EVEN_NUMBERS + sumEven);
+    out.println(SUM_OF_ODD_NUMBERS + sumOdd);
     fileOutputSource.generateEvent();
 
-    try (BufferedReader br = new BufferedReader(new FileReader("input.txt"))) {
-      // Пропускаем 1-ю строку
-      br.readLine();
-      // Читаем 2-ю строку
-      String filePath = br.readLine();
+    String filePath = readFilePathFromInputFile();
+    try (PrintWriter writer = new PrintWriter(filePath)) {
+      writer.println(SUM_OF_EVEN_NUMBERS + sumEven);
+      writer.println(SUM_OF_ODD_NUMBERS + sumOdd);
+    } catch (FileNotFoundException e) {
+      throw new MyFileNotFoundException("Файл не найден при записи результата в файл", e);
+    }
+  }
 
-      try (PrintWriter writer = new PrintWriter(filePath)) {
-        // Перехват события
-        writer.println("Сумма чётных чисел в последовательности: " + sumEven);
-        writer.println("Сумма нечётных чисел в последовательности: " + sumOdd);
-      } catch (FileNotFoundException e) {
-        throw new RuntimeException();
+  private String readFilePathFromInputFile() throws IOException {
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader("input.txt"))) {
+      // Пропускаем 1-ю строку
+      bufferedReader.readLine();
+      // Читаем 2-ю строку
+      String filePath = bufferedReader.readLine();
+      if (filePath == null) {
+        throw new InvalidInputFileException("Путь к файлу отсутствует во входном файле");
       }
-    } catch (IOException e) {
-      throw new RuntimeException();
+      return filePath;
+    }
+  }
+
+  public static class MyFileNotFoundException extends RuntimeException {
+
+    public MyFileNotFoundException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
+  public static class InvalidInputFileException extends RuntimeException {
+
+    public InvalidInputFileException(String message) {
+      super(message);
     }
   }
 
   public static void main(String[] args) throws IOException {
     SumOfEvenAndOdd obj = new SumOfEvenAndOdd();
-    Scanner scanner = new Scanner(System.in);
-    System.out.print("Выберите вариант ввода (1 - консоль, 2 - файл): ");
+    Scanner scanner = new Scanner(in);
+    out.print("Выберите вариант ввода (1 - консоль, 2 - файл): ");
     int choice = scanner.nextInt();
     scanner.nextLine();
     if (choice == 1) {
@@ -91,7 +114,7 @@ public class SumOfEvenAndOdd {
     } else if (choice == 2) {
       obj.setInputFromFile();
     } else {
-      System.out.println("Ошибка: неверный выбор варианта ввода");
+      out.println("Ошибка: неверный выбор варианта ввода");
       return;
     }
     obj.printResult();

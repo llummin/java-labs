@@ -3,5 +3,5 @@ package events;
 // Интерфейс для обработки вывода в файл
 public interface FileOutput {
 
-  void Handler();
+  void handler();
 }
