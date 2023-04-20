@@ -51,6 +51,22 @@ public class CounterServlet extends HttpServlet {
     out.println("<table><tbody>");
     out.println("<tr><td>" + "Счетчик: " + counter + "</td></tr>");
     out.println("<tr><td>" + "Размер шрифта: " + fontSize + "</td></tr>");
+    out.println("<tr><td>&nbsp;</td></tr>"); // пустая строка
+
+    // Основная функция
+    int[] sequence = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int evenSum = 0;
+    int oddSum = 0;
+    for (int number : sequence) {
+      if (number % 2 == 0) {
+        evenSum += number;
+      } else {
+        oddSum += number;
+      }
+    }
+    out.println("<tr><td>" + "Результат:" + "</td></tr>");
+    out.println("<tr><td>" + "Сумма чётных чисел в последовательности: " + evenSum + "</td></tr>");
+    out.println("<tr><td>" + "Сумма нечётных чисел в последовательности: " + oddSum + "</td></tr>");
 
     // Проверяем, можно ли еще уменьшить размер шрифта
     if (fontSize <= minFontSize) {
