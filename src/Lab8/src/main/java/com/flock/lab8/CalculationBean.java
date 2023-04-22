@@ -12,6 +12,10 @@ public class CalculationBean {
     return result;
   }
 
+  public void setResult(String result) {
+    this.result = result;
+  }
+
   public void setSequence(String sequence) {
     this.sequence = sequence;
   }

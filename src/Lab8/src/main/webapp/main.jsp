@@ -20,6 +20,8 @@
     if (request.getParameter("sequence") != null) {
         data.setSequence(request.getParameter("sequence"));
         data.calculateSum();
+    } else {
+        data.setResult("Вы не ввели последовательность чисел");
     }
 %>
 
