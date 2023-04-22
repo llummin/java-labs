@@ -1,30 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="ru" xml:lang="ru">
 <head>
     <title>Стартовая страница</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 0 20px;
-        background-color: #f7f7f7;
-        color: #2e2e2e;
-      }
-
-      p {
-        line-height: 1.5;
-      }
-
-      a {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #337ab7;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-      }
+        <%@include file="/WEB-INF/css/start.css" %>
     </style>
 </head>
 <body>
@@ -54,10 +34,8 @@
         должны быть каким-то образом размещены в видимой таблице, в таблице допускается произвольное
         число столбцов и строк.</p>
     <p>9. При повторном переходе на «Главную страницу», например при нажатии кнопки
-        «Возврат» на «Финишной странице», на «Главной странице» должно отображаться: 0
-        – изменение триггера, размещённого на «Главной странице»; 0 – изменение триггера,
-        размещённого в Bean-компоненте; 1 – изменение счётчика, размещённого на
-        «Главной странице».</p>
+        «Возврат» на «Финишной странице», на «Главной странице» должно отображаться: 2 – изменение
+        счётчика, размещённого в Bean-компоненте.</p>
     <a href="main.jsp">На главную</a>
 </main>
 </body>

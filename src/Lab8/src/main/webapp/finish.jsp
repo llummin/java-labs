@@ -6,19 +6,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Финишная страница</title>
+    <style>
+        <%@include file="/WEB-INF/css/finish.css" %>
+    </style>
 </head>
 <body>
-<h3>
-    <table border="1">
-        <tr>
-            <th>Результат выполнения функции</th>
-        </tr>
-        <tr>
-            <td><%= data.getResult() %>
-            </td>
-        </tr>
-    </table>
-</h3>
+<h1>Финишная страница</h1>
+<table>
+    <caption></caption>
+    <thead>
+    <tr>
+        <th>Результат выполнения функции</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <%= data.getResult() %>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <a href="main.jsp">
     На главную
