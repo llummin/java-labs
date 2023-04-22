@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>Главная страница</h1>
-
+<h3>Счетчик: <%= data.getCounter() %></h3>
 <%-- Вычисляем сумму и сохраняем ее в бин --%>
 <%
     if (request.getParameter("sequence") != null) {

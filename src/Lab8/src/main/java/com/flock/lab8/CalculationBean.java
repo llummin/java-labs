@@ -6,6 +6,7 @@ public class CalculationBean {
 
   private String result;
   private String sequence;
+  private int counter;
 
   public String getResult() {
     return result;
@@ -13,6 +14,14 @@ public class CalculationBean {
 
   public void setSequence(String sequence) {
     this.sequence = sequence;
+  }
+
+  public int getCounter() {
+    return counter;
+  }
+
+  public void increaseCounter() {
+    counter++;
   }
 
   public void calculateSum() {

@@ -20,6 +20,11 @@
     </table>
 </h3>
 
-<a href="main.jsp">На главную</a>
+<a href="main.jsp">
+    На главную
+    <%
+        data.increaseCounter();
+    %>
+</a>
 </body>
 </html>
