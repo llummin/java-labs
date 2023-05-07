@@ -29,6 +29,14 @@ public class UDPServer {
   private static final String[][] STR_ARR = new String[ROWS_ARR][COLS_ARR];
   private static final float[][] FLOAT_ARR = new float[ROWS_ARR][COLS_ARR];
 
+
+  /**
+   * Обрабатывает запрос клиента и возвращает соответствующий ответ.
+   *
+   * @param answer         запрос клиента
+   * @param protectedCells список защищенных ячеек в массивах
+   * @return ответ на запрос клиента
+   */
   private static byte @NotNull [] processClientRequest(@NotNull String answer,
       List<Object[]> protectedCells) {
     String[] array = answer.split(" ");
@@ -43,6 +51,13 @@ public class UDPServer {
     return data != null ? data.getBytes() : "Неизвестная команда!".getBytes();
   }
 
+  /**
+   * Редактирует элементы в массивах по запросу клиента.
+   *
+   * @param array          запрос клиента в виде массива строк
+   * @param protectedCells список защищенных ячеек в массивах
+   * @return измененный массив в виде строки
+   */
   private static @Nullable String editArraysElement(String[] array, List<Object[]> protectedCells) {
     int[] commandNumbers = new int[3];
     for (int i = 0; i < 3; i++) {
@@ -72,6 +87,14 @@ public class UDPServer {
     };
   }
 
+  /**
+   * Редактирует элемент целочисленного массива.
+   *
+   * @param array          массив аргументов
+   * @param commandNumbers числа команды
+   * @return отредактированный целочисленный массив в виде строки, либо null, если элемент не
+   * удалось отредактировать
+   */
   private static @Nullable String editIntArrayElement(String @NotNull [] array,
       int @NotNull [] commandNumbers) {
     if (array[3].matches("[-+]?\\d+")) {
@@ -82,6 +105,14 @@ public class UDPServer {
     }
   }
 
+  /**
+   * Редактирует элемент вещественного массива.
+   *
+   * @param array          массив аргументов
+   * @param commandNumbers числа команды
+   * @return отредактированный вещественный массив в виде строки, либо null, если элемент не удалось
+   * отредактировать
+   */
   private static @Nullable String editFloatArrayElement(String @NotNull [] array,
       int[] commandNumbers) {
     if (array[3].matches("[-+]?\\d+\\.?\\d*")) {
@@ -92,6 +123,13 @@ public class UDPServer {
     }
   }
 
+  /**
+   * Редактирует элемент строкового массива.
+   *
+   * @param array          массив аргументов
+   * @param commandNumbers числа команды
+   * @return отредактированный строковый массив в виде строки
+   */
   private static @NotNull String editStringArrayElement(String @NotNull [] array,
       int[] commandNumbers) {
     StringBuilder stringArg = new StringBuilder();
@@ -103,6 +141,12 @@ public class UDPServer {
     return Arrays.deepToString(STR_ARR);
   }
 
+  /**
+   * Возвращает элемент массива по указанным индексам.
+   *
+   * @param array входной массив
+   * @return информация о найденном элементе в виде строки, либо null, если элемент не найден
+   */
   private static @Nullable String getArrayElement(String[] array) {
     try {
       int[] commandNumbers = Arrays.stream(array)
@@ -145,17 +189,44 @@ public class UDPServer {
     }
   }
 
+  /**
+   * Возвращает размер массива в виде байтового массива.
+   *
+   * @return Размер массива в формате: "Размер массива: ROWS_ARR x COLS_ARR\n"
+   */
   private static byte @NotNull [] returnArraySize() {
     return ("Размер массива: " + ROWS_ARR + " x " + COLS_ARR + "\n").getBytes();
   }
 
-  private static byte @NotNull [] startClient() {
+  private static void setArrayElement() {
+    UDPServer.INT_ARR[0][0] = 5;
+  }
+
+  /**
+   * Запускает клиентское приложение и возвращает данные в виде байтового массива.
+   *
+   * @return Данные клиентского приложения в формате:
+   * "1: Целочисленный массив: \n" + Arrays.deepToString(INT_ARR) +
+   * "\n\n2: Вещественный массив: \n" + Arrays.deepToString(FLOAT_ARR) +
+   * "\n\n3: Строковый массив: \n" + Arrays.deepToString(STR_ARR) +
+   * "\n\nВведите: [1-3] [индекс] [индекс] [новое значение]\n"
+   */
+  private static byte[] startClient() {
+    setArrayElement();
     return ("1: Целочисленный массив: \n" + Arrays.deepToString(INT_ARR) +
         "\n\n2: Вещественный массив: \n" + Arrays.deepToString(FLOAT_ARR) +
         "\n\n3: Строковый массив: \n" + Arrays.deepToString(STR_ARR) +
         "\n\nВведите: [1-3] [индекс] [индекс] [новое значение]\n").getBytes();
   }
 
+  /**
+   * Главный метод программы.
+   *
+   * @param args Аргументы командной строки.
+   * @throws RuntimeException         Если возникает ошибка при выполнении программы.
+   * @throws NumberFormatException    Если не удалось преобразовать порт сервера в число.
+   * @throws IOException              Если возникает ошибка ввода-вывода.
+   */
   public static void main(String @NotNull [] args) {
     List<Object[]> protectedCells = new ArrayList<>();
 
@@ -186,11 +257,20 @@ public class UDPServer {
     }
   }
 
+  /**
+   * Запускает сервер и обрабатывает запросы клиентов.
+   *
+   * @param port            Порт сервера.
+   * @param f               Файл журнала сервера.
+   * @param protectedCells  Список защищенных ячеек.
+   * @throws IOException    Если возникает ошибка ввода-вывода.
+   */
   private static void runServer(int port, File f, List<Object[]> protectedCells)
       throws IOException {
     try (BufferedWriter journalFileWriter = new BufferedWriter(
         new FileWriter(f.getAbsolutePath(), true));
         DatagramSocket servSocket = new DatagramSocket(port)) {
+      out.println("Сервер запущен...");
 
       while (true) {
         byte[] data = new byte[LENGTH_PACKET];
@@ -198,11 +278,13 @@ public class UDPServer {
         servSocket.receive(datagram);
 
         String answer = new String(data, StandardCharsets.UTF_8).trim();
-        journalFileWriter.write(answer + "\n");
 
         InetAddress clientAddr = datagram.getAddress();
         int clientPort = datagram.getPort();
         out.println("Получено от клиента: " + answer);
+
+        journalFileWriter.write(answer + "\n");
+        journalFileWriter.flush();
 
         byte[] response;
         switch (answer) {

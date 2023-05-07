@@ -20,7 +20,7 @@ public class Settings {
       properties.load(fis);
       serverAddress = properties.getProperty("server.address");
       serverPort = Integer.parseInt(properties.getProperty("server.port"));
-      clientLogPath = properties.getProperty("client.log");
+      clientLogPath = properties.getProperty("client.txt");
     } catch (IOException e) {
       e.printStackTrace();
     }
