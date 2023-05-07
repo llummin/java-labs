@@ -1,13 +1,13 @@
 package server;
 
-import static java.lang.System.*;
-
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
 import interfaces.Compute;
 import interfaces.Task;
+
+import static java.lang.System.*;
 
 public class ComputeEngine implements Compute {
 
@@ -21,8 +21,8 @@ public class ComputeEngine implements Compute {
   }
 
   public static void main(String[] args) {
-    if (getSecurityManager() == null) {
-      setSecurityManager(new SecurityManager());
+    if (System.getSecurityManager() == null) {
+      System.setSecurityManager(new SecurityManager());
     }
     try {
       String name = "Compute";

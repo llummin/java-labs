@@ -6,4 +6,3 @@ public interface Task<T> extends Serializable {
 
   T execute();
 }
-

@@ -18,19 +18,17 @@ public class ComputeTask {
       Registry registry = LocateRegistry.getRegistry(args[0]);
       Compute comp = (Compute) registry.lookup(name);
 
-      // Создаем экземпляр класса SumTask, передавая ему последовательность чисел
-      SumTask task = new SumTask(args);
+      SumTask task = new SumTask(args, 1);
 
       // Выполняем задачу на удаленном сервере и получаем результат
-      Integer[] results = (Integer[]) comp.executeTask(task);
+      Integer[] results = comp.executeTask(task);
 
       // Выводим результаты
-      out.println("Сумма чётных чисел в последовательности: " + results[0]);
-      out.println("Сумма нечётных чисел в последовательности: " + results[1]);
+      out.println("Sum of even numbers in sequence: " + results[0]);
+      out.println("Sum of odd numbers in a sequence: " + results[1]);
     } catch (Exception e) {
-      err.println("ComputePi exception:");
+      err.println("ComputeTask exception:");
       e.printStackTrace();
     }
   }
 }
-
