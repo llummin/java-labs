@@ -1,15 +1,15 @@
 <h1 align="center">Технологии программирования на платформе Java</h1>
 
 ## Лабораторные работы
-1. [Работа с java и javac через командную строку](https://github.com/Flockk/java-labs/edit/main/README.md#1-работа-с-java-и-javac-через-командную-строку)
-2. [Классы, интерфейсы, исключения](https://github.com/Flockk/java-labs/edit/main/README.md#2-классы-интерфейсы-исключения)
-3. [События и уведомления](https://github.com/Flockk/java-labs/edit/main/README.md#3-события-и-уведомления)
-4. [Клиент. Сервер.](https://github.com/Flockk/java-labs/edit/main/README.md#4-клиент-сервер)
-5. [Клиент. Сервер. RMI](https://github.com/Flockk/java-labs/edit/main/README.md#5-клиент-сервер-rmi)
-6. [Потоки. Графика](https://github.com/Flockk/java-labs/edit/main/README.md#6-потоки-графика)
-7. [Сервлеты](https://github.com/Flockk/java-labs/edit/main/README.md#7-сервлеты)
-8. [Beans, JSP, JSF](https://github.com/Flockk/java-labs/edit/main/README.md#8-beans-jsp-jsf)
-9. [JavaDB](https://github.com/Flockk/java-labs/edit/main/README.md#9-javadb)
+1. [Работа с java и javac через командную строку](#1-работа-с-java-и-javac-через-командную-строку)
+2. [Классы, интерфейсы, исключения](2-классы-интерфейсы-исключения)
+3. [События и уведомления](#3-события-и-уведомления)
+4. [Клиент. Сервер.](#4-клиент-сервер)
+5. [Клиент. Сервер. RMI](#5-клиент-сервер-rmi)
+6. [Потоки. Графика](#6-потоки-графика)
+7. [Сервлеты](#7-сервлеты)
+8. [Beans, JSP, JSF](#8-beans-jsp-jsf)
+9. [JavaDB](#9-javadb)
 
 ## 1. Работа с java и javac через командную строку
 
