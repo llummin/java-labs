@@ -7,7 +7,8 @@ CREATE TABLE book_places
     book_place_id SERIAL PRIMARY KEY,
     floor         INT NOT NULL,
     bookcase      INT NOT NULL,
-    shelf         INT NOT NULL
+    shelf         INT NOT NULL,
+    CONSTRAINT unique_book_place UNIQUE (floor, bookcase, shelf)
 );
 
 CREATE TABLE books

@@ -24,24 +24,47 @@ public class LibraryDB {
     }
   }
 
-  public void addBookPlace(BookPlace bookPlace) {
+  public boolean isBookPlaceExists(BookPlace bookPlace) {
     try {
-      String query = "INSERT INTO book_places (floor, bookcase, shelf) VALUES (?, ?, ?)";
+      String query = "SELECT 1 FROM book_places WHERE floor = ? AND bookcase = ? AND shelf = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setInt(1, bookPlace.getFloor());
+      statement.setInt(2, bookPlace.getBookcase());
+      statement.setInt(3, bookPlace.getShelf());
+      ResultSet resultSet = statement.executeQuery();
+      return resultSet.next();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public int addBookPlace(BookPlace bookPlace) {
+    try {
+      String query = "INSERT INTO book_places (floor, bookcase, shelf) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM book_places WHERE floor = ? AND bookcase = ? AND shelf = ?)";
       PreparedStatement statement = connection.prepareStatement(query,
           Statement.RETURN_GENERATED_KEYS);
       statement.setInt(1, bookPlace.getFloor());
       statement.setInt(2, bookPlace.getBookcase());
       statement.setInt(3, bookPlace.getShelf());
-      statement.executeUpdate();
+      statement.setInt(4, bookPlace.getFloor());
+      statement.setInt(5, bookPlace.getBookcase());
+      statement.setInt(6, bookPlace.getShelf());
+      int rowsAffected = statement.executeUpdate();
 
-      ResultSet generatedKeys = statement.getGeneratedKeys();
-      if (generatedKeys.next()) {
-        int generatedId = generatedKeys.getInt(1);
-        bookPlace.setBookPlaceId(generatedId);
+      if (rowsAffected > 0) {
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+          int generatedId = generatedKeys.getInt(1);
+          bookPlace.setBookPlaceId(generatedId);
+        }
+      } else {
+        throw new SQLException("Место с такой комбинацией этажа, шкафа и полки уже существует.");
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    return 0;
   }
 
   public void addBook(Book book) {
@@ -153,6 +176,42 @@ public class LibraryDB {
       e.printStackTrace();
     }
     return bookPlaces;
+  }
+
+  public void updateBookPlace(BookPlace bookPlace) {
+    try {
+      String checkQuery = "SELECT 1 FROM book_places WHERE floor = ? AND bookcase = ? AND shelf = ?";
+      PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
+      checkStatement.setInt(1, bookPlace.getFloor());
+      checkStatement.setInt(2, bookPlace.getBookcase());
+      checkStatement.setInt(3, bookPlace.getShelf());
+      ResultSet resultSet = checkStatement.executeQuery();
+
+      if (resultSet.next()) {
+        throw new SQLException("Место с такой комбинацией этажа, шкафа и полки уже существует.");
+      }
+
+      String updateQuery = "UPDATE book_places SET floor = ?, bookcase = ?, shelf = ? WHERE book_place_id = ?";
+      PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+      updateStatement.setInt(1, bookPlace.getFloor());
+      updateStatement.setInt(2, bookPlace.getBookcase());
+      updateStatement.setInt(3, bookPlace.getShelf());
+      updateStatement.setInt(4, bookPlace.getBookPlaceId());
+      updateStatement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void deleteBookPlace(BookPlace bookPlace) {
+    try {
+      String query = "DELETE FROM book_places WHERE book_place_id = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setInt(1, bookPlace.getBookPlaceId());
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   public List<Book> getBooksByPlace(int placeId) {

@@ -3,7 +3,7 @@ package org.flock;
 public class Book {
 
   private int bookId;
-  private BookPlace bookPlace;
+  private final BookPlace bookPlace;
   private String author;
   private String title;
   private String publisher;
@@ -35,10 +35,6 @@ public class Book {
 
   public BookPlace getBookPlace() {
     return bookPlace;
-  }
-
-  public void setBookPlace(BookPlace bookPlace) {
-    this.bookPlace = bookPlace;
   }
 
   public String getAuthor() {
