@@ -476,7 +476,7 @@ public class LibraryDBApp extends JFrame {
         displayBooks(books);
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод! Пожалуйста, введите числовое значение для ID места.");
+            "Неверный ввод!");
       }
     }
   }
@@ -504,7 +504,7 @@ public class LibraryDBApp extends JFrame {
         displayPublishers(publishers);
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод! Пожалуйста, введите числовое значение для ID места.");
+            "Неверный ввод!");
       }
     }
   }
@@ -635,7 +635,14 @@ public class LibraryDBApp extends JFrame {
     gbc.anchor = GridBagConstraints.WEST;
     gbc.insets = new Insets(5, 5, 5, 5);
 
-    inputPanel.add(new JLabel("Номер места:"), gbc);
+    inputPanel.add(new JLabel("Этаж:"), gbc);
+    gbc.gridx++;
+    JTextField floorField = new JTextField(10);
+    inputPanel.add(floorField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel("Шкаф:"), gbc);
     gbc.gridx++;
     JTextField bookcaseField = new JTextField(10);
     inputPanel.add(bookcaseField, gbc);
@@ -645,18 +652,17 @@ public class LibraryDBApp extends JFrame {
 
     if (result == JOptionPane.OK_OPTION) {
       try {
+        int bookPlaceId = Integer.parseInt(floorField.getText());
         int bookcase = Integer.parseInt(bookcaseField.getText());
-        Book heaviestBook = libraryDB.getHeaviestBookInBookcase(bookcase);
+        Book heaviestBook = libraryDB.getHeaviestBookInBookcase(bookPlaceId, bookcase);
         if (heaviestBook != null) {
           List<Book> books = new ArrayList<>();
           books.add(heaviestBook);
           displayBooks(books);
-        } else {
-          JOptionPane.showMessageDialog(this, "На данном месте нет книг!");
         }
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод! Пожалуйста, введите числовое значение для номера места.");
+            "Неверный ввод!");
       }
     }
   }
@@ -669,7 +675,14 @@ public class LibraryDBApp extends JFrame {
     gbc.anchor = GridBagConstraints.WEST;
     gbc.insets = new Insets(5, 5, 5, 5);
 
-    inputPanel.add(new JLabel("Номер места:"), gbc);
+    inputPanel.add(new JLabel("Этаж:"), gbc);
+    gbc.gridx++;
+    JTextField floorField = new JTextField(10);
+    inputPanel.add(floorField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel("Шкаф:"), gbc);
     gbc.gridx++;
     JTextField bookcaseField = new JTextField(10);
     inputPanel.add(bookcaseField, gbc);
@@ -679,18 +692,17 @@ public class LibraryDBApp extends JFrame {
 
     if (result == JOptionPane.OK_OPTION) {
       try {
+        int bookPlaceId = Integer.parseInt(floorField.getText());
         int bookcase = Integer.parseInt(bookcaseField.getText());
-        Book lightestBook = libraryDB.getLightestBookInBookcase(bookcase);
+        Book lightestBook = libraryDB.getLightestBookInBookcase(bookPlaceId, bookcase);
         if (lightestBook != null) {
           List<Book> books = new ArrayList<>();
           books.add(lightestBook);
           displayBooks(books);
-        } else {
-          JOptionPane.showMessageDialog(this, "На данной месте нет книг!");
         }
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод! Пожалуйста, введите числовое значение для номера места");
+            "Неверный ввод!");
       }
     }
   }

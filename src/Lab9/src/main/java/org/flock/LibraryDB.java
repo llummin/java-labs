@@ -271,15 +271,20 @@ public class LibraryDB {
     return publishers;
   }
 
-  public Book getHeaviestBookInBookcase(int bookcase) {
+  public Book getHeaviestBookInBookcase(int floor, int bookcase) {
     Book heaviestBook = null;
     try {
       String query =
-          "SELECT * FROM books WHERE book_place_id IN (SELECT book_place_id FROM book_places WHERE bookcase = ?) "
-              +
-              "ORDER BY weight_grams DESC LIMIT 1";
+          "WITH book_weights AS (" +
+              "SELECT b.*, bp.bookcase " +
+              "FROM books b " +
+              "JOIN book_places bp ON b.book_place_id = bp.book_place_id " +
+              "WHERE bp.floor = ? AND bp.bookcase = ?" +
+              ") " +
+              "SELECT * FROM book_weights WHERE weight_grams = (SELECT MAX(weight_grams) FROM book_weights) LIMIT 1";
       PreparedStatement statement = connection.prepareStatement(query);
-      statement.setInt(1, bookcase);
+      statement.setInt(1, floor);
+      statement.setInt(2, bookcase);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet.next()) {
         int bookId = resultSet.getInt("book_id");
@@ -304,15 +309,20 @@ public class LibraryDB {
     return heaviestBook;
   }
 
-  public Book getLightestBookInBookcase(int bookcase) {
+  public Book getLightestBookInBookcase(int floor, int bookcase) {
     Book lightestBook = null;
     try {
       String query =
-          "SELECT * FROM books WHERE book_place_id IN (SELECT book_place_id FROM book_places WHERE bookcase = ?) "
-              +
-              "ORDER BY weight_grams LIMIT 1";
+          "WITH book_weights AS (" +
+              "SELECT b.*, bp.bookcase " +
+              "FROM books b " +
+              "JOIN book_places bp ON b.book_place_id = bp.book_place_id " +
+              "WHERE bp.floor = ? AND bp.bookcase = ?" +
+              ") " +
+              "SELECT * FROM book_weights WHERE weight_grams = (SELECT MIN(weight_grams) FROM book_weights) LIMIT 1";
       PreparedStatement statement = connection.prepareStatement(query);
-      statement.setInt(1, bookcase);
+      statement.setInt(1, floor);
+      statement.setInt(2, bookcase);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet.next()) {
         int bookId = resultSet.getInt("book_id");
