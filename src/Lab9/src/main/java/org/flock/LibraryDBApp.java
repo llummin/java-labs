@@ -40,10 +40,11 @@ public class LibraryDBApp extends JFrame {
     JButton addBookButton = new JButton("Добавить книгу");
     JButton getAllBookPlacesButton = new JButton("Показать все места");
     JButton getAllBooksButton = new JButton("Показать все книги");
-    JButton getBooksByPlaceButton = new JButton("Показать книги по месту в библиотеке");
-    JButton getPublishersButton = new JButton("Показать издательства на полке");
-    JButton getHeaviestBookButton = new JButton("Показать самую тяжелую книгу");
-    JButton getLightestBookButton = new JButton("Показать самую легкую книгу");
+    JButton getBooksByPlaceButton = new JButton("Книги по месту в библиотеке");
+    JButton getPublishersButton = new JButton("Издательства на полке");
+    JButton getHeaviestBookButton = new JButton("Самая тяжелая книга");
+    JButton getLightestBookButton = new JButton("Самая легкая книга");
+    JButton resetNonKeyFieldsButton = new JButton("Сбросить не ключевые поля");
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(addBookPlaceButton);
@@ -54,6 +55,7 @@ public class LibraryDBApp extends JFrame {
     buttonPanel.add(getPublishersButton);
     buttonPanel.add(getHeaviestBookButton);
     buttonPanel.add(getLightestBookButton);
+    buttonPanel.add(resetNonKeyFieldsButton);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -68,6 +70,13 @@ public class LibraryDBApp extends JFrame {
     getPublishersButton.addActionListener(e -> getPublishersOnPlace());
     getHeaviestBookButton.addActionListener(e -> getHeaviestBook());
     getLightestBookButton.addActionListener(e -> getLightestBook());
+    resetNonKeyFieldsButton.addActionListener(e -> resetNonKeyFields());
+  }
+
+  private void resetNonKeyFields() {
+    libraryDB.resetNonKeyFields();
+    JOptionPane.showMessageDialog(this, "Не ключевые поля сброшены.", "Успех",
+        JOptionPane.INFORMATION_MESSAGE);
   }
 
   private void addBookPlace() {
@@ -113,6 +122,7 @@ public class LibraryDBApp extends JFrame {
           JOptionPane.showMessageDialog(this,
               "Место с такой комбинацией этажа, шкафа и полки уже существует!");
         } else {
+          libraryDB.addBookPlace(bookPlace);
           JOptionPane.showMessageDialog(this, "Место успешно добавлено!");
         }
       } catch (NumberFormatException e) {

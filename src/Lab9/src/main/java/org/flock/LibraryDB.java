@@ -39,7 +39,18 @@ public class LibraryDB {
     return false;
   }
 
-  public int addBookPlace(BookPlace bookPlace) {
+  public void resetNonKeyFields() {
+    try {
+      String query = "UPDATE books SET author = '', title = '', publisher = '', " +
+          "publication_year = 0, num_pages = 0, writing_year = 0, weight_grams = 0";
+      Statement statement = connection.createStatement();
+      statement.executeUpdate(query);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void addBookPlace(BookPlace bookPlace) {
     try {
       String query = "INSERT INTO book_places (floor, bookcase, shelf) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM book_places WHERE floor = ? AND bookcase = ? AND shelf = ?)";
       PreparedStatement statement = connection.prepareStatement(query,
@@ -64,7 +75,6 @@ public class LibraryDB {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return 0;
   }
 
   public void addBook(Book book) {
