@@ -68,7 +68,7 @@ public class LibraryDBApp extends JFrame {
     getAllBookPlacesButton.addActionListener(e -> getAllBookPlaces());
     getAllBooksButton.addActionListener(e -> getAllBooks());
     getBooksByPlaceButton.addActionListener(e -> getBooksByPlace());
-    getPublishersButton.addActionListener(e -> getPublishersOnPlace());
+    getPublishersButton.addActionListener(e -> getPublishersOnShelf());
     getHeaviestBookButton.addActionListener(e -> getHeaviestBook());
     getLightestBookButton.addActionListener(e -> getLightestBook());
   }
@@ -481,7 +481,7 @@ public class LibraryDBApp extends JFrame {
     }
   }
 
-  private void getPublishersOnPlace() {
+  private void getPublishersOnShelf() {
     JPanel inputPanel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
@@ -489,19 +489,35 @@ public class LibraryDBApp extends JFrame {
     gbc.anchor = GridBagConstraints.WEST;
     gbc.insets = new Insets(5, 5, 5, 5);
 
-    inputPanel.add(new JLabel("ID места:"), gbc);
+    inputPanel.add(new JLabel("Этаж:"), gbc);
     gbc.gridx++;
-    JTextField placeIdField = new JTextField(10);
-    inputPanel.add(placeIdField, gbc);
+    JTextField floorField = new JTextField(10);
+    inputPanel.add(floorField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel("Шкаф:"), gbc);
+    gbc.gridx++;
+    JTextField bookcaseField = new JTextField(10);
+    inputPanel.add(bookcaseField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel("Полка:"), gbc);
+    gbc.gridx++;
+    JTextField shelfField = new JTextField(10);
+    inputPanel.add(shelfField, gbc);
 
     int result = JOptionPane.showConfirmDialog(this, inputPanel, "Показать издательства на полке",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
     if (result == JOptionPane.OK_OPTION) {
       try {
-        int placeId = Integer.parseInt(placeIdField.getText());
-        List<String> publishers = libraryDB.getPublishersOnPlace(placeId);
-        displayPublishers(publishers);
+        int floor = Integer.parseInt(floorField.getText());
+        int bookcase = Integer.parseInt(bookcaseField.getText());
+        int shelf = Integer.parseInt(shelfField.getText());
+        List<String> publishers = libraryDB.getPublishersOnShelf(floor, bookcase, shelf);
+        displayPublishersTable(publishers);
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
             "Неверный ввод!");
@@ -509,15 +525,29 @@ public class LibraryDBApp extends JFrame {
     }
   }
 
-  private void displayPublishers(List<String> publishers) {
+  private void displayPublishersTable(List<String> publishers) {
     if (publishers.isEmpty()) {
-      JOptionPane.showMessageDialog(this, "На данном месте нет книг от издателей.");
+      JOptionPane.showMessageDialog(this, "На данной полке нет книг от издателей.");
     } else {
-      StringBuilder message = new StringBuilder("Издательства на полке:\n");
-      for (String publisher : publishers) {
-        message.append(publisher).append("\n");
+      String[] columnNames = {"Издательство"};
+      Object[][] data = new Object[publishers.size()][1];
+
+      for (int i = 0; i < publishers.size(); i++) {
+        data[i][0] = publishers.get(i);
       }
-      JOptionPane.showMessageDialog(this, message.toString());
+
+      DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+      JTable publishersTable = new JTable(tableModel);
+      JScrollPane scrollPane = new JScrollPane(publishersTable);
+      publishersTable.setFillsViewportHeight(true);
+
+      JPanel mainPanel = (JPanel) getContentPane().getComponent(0);
+      if (mainPanel.getComponentCount() > 1) {
+        mainPanel.remove(1);
+      }
+      mainPanel.add(scrollPane, BorderLayout.CENTER);
+      mainPanel.revalidate();
+      mainPanel.repaint();
     }
   }
 
