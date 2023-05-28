@@ -36,6 +36,7 @@ public class LibraryDBApp extends JFrame {
   }
 
   private void initializeComponents() {
+    JButton restoreDefaultValuesButton = new JButton("Заполнить таблицу");
     JButton addBookPlaceButton = new JButton("Добавить место");
     JButton addBookButton = new JButton("Добавить книгу");
     JButton getAllBookPlacesButton = new JButton("Показать все места");
@@ -44,9 +45,9 @@ public class LibraryDBApp extends JFrame {
     JButton getPublishersButton = new JButton("Издательства на полке");
     JButton getHeaviestBookButton = new JButton("Самая тяжелая книга");
     JButton getLightestBookButton = new JButton("Самая легкая книга");
-    JButton resetNonKeyFieldsButton = new JButton("Сбросить не ключевые поля");
 
     JPanel buttonPanel = new JPanel();
+    buttonPanel.add(restoreDefaultValuesButton);
     buttonPanel.add(addBookPlaceButton);
     buttonPanel.add(addBookButton);
     buttonPanel.add(getAllBookPlacesButton);
@@ -55,13 +56,13 @@ public class LibraryDBApp extends JFrame {
     buttonPanel.add(getPublishersButton);
     buttonPanel.add(getHeaviestBookButton);
     buttonPanel.add(getLightestBookButton);
-    buttonPanel.add(resetNonKeyFieldsButton);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
     add(mainPanel);
 
+    restoreDefaultValuesButton.addActionListener(e -> restoreDefaultValues());
     addBookPlaceButton.addActionListener(e -> addBookPlace());
     addBookButton.addActionListener(e -> addBook());
     getAllBookPlacesButton.addActionListener(e -> getAllBookPlaces());
@@ -70,12 +71,11 @@ public class LibraryDBApp extends JFrame {
     getPublishersButton.addActionListener(e -> getPublishersOnPlace());
     getHeaviestBookButton.addActionListener(e -> getHeaviestBook());
     getLightestBookButton.addActionListener(e -> getLightestBook());
-    resetNonKeyFieldsButton.addActionListener(e -> resetNonKeyFields());
   }
 
-  private void resetNonKeyFields() {
-    libraryDB.resetNonKeyFields();
-    JOptionPane.showMessageDialog(this, "Не ключевые поля сброшены.", "Успех",
+  private void restoreDefaultValues() {
+    libraryDB.restoreDefaultValues();
+    JOptionPane.showMessageDialog(this, "Таблица заполнена!", "Успех",
         JOptionPane.INFORMATION_MESSAGE);
   }
 
