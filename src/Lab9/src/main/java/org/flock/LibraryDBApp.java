@@ -24,6 +24,12 @@ public class LibraryDBApp extends JFrame {
   private final transient LibraryDB libraryDB;
   private transient Book selectedBook;
   private transient BookPlace selectedBookPlace;
+  private JTextField floorField;
+  private JTextField bookcaseField;
+  private JTextField shelfField;
+  private static final String LABEL_FLOOR = "Этаж:";
+  private static final String LABEL_BOOKCASE = "Шкаф:";
+  private static final String INVALID_INPUT_MESSAGE = "Неверный ввод!";
 
   public LibraryDBApp() {
     libraryDB = new LibraryDB();
@@ -80,31 +86,7 @@ public class LibraryDBApp extends JFrame {
   }
 
   private void addBookPlace() {
-    JPanel inputPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.WEST;
-    gbc.insets = new Insets(5, 5, 5, 5);
-
-    inputPanel.add(new JLabel("Этаж:"), gbc);
-    gbc.gridx++;
-    JTextField floorField = new JTextField(10);
-    inputPanel.add(floorField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(new JLabel("Шкаф:"), gbc);
-    gbc.gridx++;
-    JTextField bookcaseField = new JTextField(10);
-    inputPanel.add(bookcaseField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(new JLabel("Полка:"), gbc);
-    gbc.gridx++;
-    JTextField shelfField = new JTextField(10);
-    inputPanel.add(shelfField, gbc);
+    JPanel inputPanel = createInputPanel();
 
     int result = JOptionPane.showConfirmDialog(this, inputPanel, "Добавить место",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -127,7 +109,129 @@ public class LibraryDBApp extends JFrame {
         }
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный Ввод! Пожалуйста, введите числовые значения для этажа, шкафа и полки!");
+            INVALID_INPUT_MESSAGE);
+      }
+    }
+  }
+
+  private JPanel createInputPanel() {
+    JPanel inputPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.anchor = GridBagConstraints.WEST;
+    gbc.insets = new Insets(5, 5, 5, 5);
+
+    inputPanel.add(new JLabel(LABEL_FLOOR), gbc);
+    gbc.gridx++;
+    floorField = new JTextField(10);
+    inputPanel.add(floorField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel(LABEL_BOOKCASE), gbc);
+    gbc.gridx++;
+    bookcaseField = new JTextField(10);
+    inputPanel.add(bookcaseField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(new JLabel("Полка:"), gbc);
+    gbc.gridx++;
+    shelfField = new JTextField(10);
+    inputPanel.add(shelfField, gbc);
+
+    return inputPanel;
+  }
+
+  private void updateBookPlace(BookPlace bookPlace) {
+    libraryDB.updateBookPlace(bookPlace);
+  }
+
+  private void deleteBookPlace(BookPlace bookPlace) {
+    libraryDB.deleteBookPlace(bookPlace);
+  }
+
+  private void showEditDeletePlaceDialog() {
+    Object[] options = {"Изменить", "Удалить"};
+    int choice = JOptionPane.showOptionDialog(this,
+        "Выберите действие для места книги:",
+        "Изменение/Удаление места книги",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]);
+
+    if (choice == JOptionPane.YES_OPTION) {
+      if (selectedBookPlace != null) {
+        showEditBookPlaceDialog(selectedBookPlace);
+      }
+    } else if (choice == JOptionPane.NO_OPTION && selectedBookPlace != null) {
+      int confirmChoice = JOptionPane.showConfirmDialog(this,
+          "Вы уверены, что хотите удалить место книги?",
+          "Подтверждение удаления",
+          JOptionPane.YES_NO_OPTION);
+      if (confirmChoice == JOptionPane.YES_OPTION) {
+        deleteBookPlace(selectedBookPlace);
+      }
+    }
+  }
+
+  private void showEditBookPlaceDialog(BookPlace bookPlace) {
+    JPanel inputPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.anchor = GridBagConstraints.WEST;
+    gbc.insets = new Insets(5, 5, 5, 5);
+
+    JLabel floorLabel = new JLabel(LABEL_FLOOR);
+    JTextField floorTextField = new JTextField(String.valueOf(bookPlace.getFloor()), 10);
+    inputPanel.add(floorLabel, gbc);
+    gbc.gridx++;
+    inputPanel.add(floorTextField, gbc);
+
+    JLabel bookcaseLabel = new JLabel(LABEL_BOOKCASE);
+    JTextField bookcaseTextField = new JTextField(String.valueOf(bookPlace.getBookcase()), 10);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(bookcaseLabel, gbc);
+    gbc.gridx++;
+    inputPanel.add(bookcaseTextField, gbc);
+
+    JLabel shelfLabel = new JLabel("Полка:");
+    JTextField shelfTextField = new JTextField(String.valueOf(bookPlace.getShelf()), 10);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    inputPanel.add(shelfLabel, gbc);
+    gbc.gridx++;
+    inputPanel.add(shelfTextField, gbc);
+
+    int result = JOptionPane.showConfirmDialog(this, inputPanel, "Изменить место книги",
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if (result == JOptionPane.OK_OPTION) {
+      try {
+        int newFloor = Integer.parseInt(floorTextField.getText());
+        int newBookcase = Integer.parseInt(bookcaseTextField.getText());
+        int newShelf = Integer.parseInt(shelfTextField.getText());
+
+        BookPlace newBookPlace = new BookPlace(newFloor, newBookcase, newShelf);
+
+        // Проверка наличия комбинации места книги в базе данных
+        if (libraryDB.isBookPlaceExists(newBookPlace)) {
+          JOptionPane.showMessageDialog(this,
+              "Место с такой комбинацией этажа, шкафа и полки уже существует!");
+        } else {
+          selectedBookPlace.setFloor(newFloor);
+          selectedBookPlace.setBookcase(newBookcase);
+          selectedBookPlace.setShelf(newShelf);
+
+          updateBookPlace(selectedBookPlace);
+        }
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Ошибка при изменении места книги: " + e.getMessage());
       }
     }
   }
@@ -221,7 +325,7 @@ public class LibraryDBApp extends JFrame {
         JOptionPane.showMessageDialog(this, "Книга успешно добавлена!");
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный Ввод! Введите числовые значения для id места, года издания, количества страниц, года написания и веса (граммы).");
+            INVALID_INPUT_MESSAGE);
       }
     }
   }
@@ -361,98 +465,6 @@ public class LibraryDBApp extends JFrame {
     }
   }
 
-  private void updateBookPlace(BookPlace bookPlace) {
-    libraryDB.updateBookPlace(bookPlace);
-  }
-
-  private void deleteBookPlace(BookPlace bookPlace) {
-    libraryDB.deleteBookPlace(bookPlace);
-  }
-
-  private void showEditDeletePlaceDialog() {
-    Object[] options = {"Изменить", "Удалить"};
-    int choice = JOptionPane.showOptionDialog(this,
-        "Выберите действие для места книги:",
-        "Изменение/Удаление места книги",
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]);
-
-    if (choice == JOptionPane.YES_OPTION) {
-      if (selectedBookPlace != null) {
-        showEditBookPlaceDialog(selectedBookPlace);
-      }
-    } else if (choice == JOptionPane.NO_OPTION && selectedBookPlace != null) {
-      int confirmChoice = JOptionPane.showConfirmDialog(this,
-          "Вы уверены, что хотите удалить место книги?",
-          "Подтверждение удаления",
-          JOptionPane.YES_NO_OPTION);
-      if (confirmChoice == JOptionPane.YES_OPTION) {
-        deleteBookPlace(selectedBookPlace);
-      }
-    }
-  }
-
-  private void showEditBookPlaceDialog(BookPlace bookPlace) {
-    JPanel inputPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.WEST;
-    gbc.insets = new Insets(5, 5, 5, 5);
-
-    JLabel floorLabel = new JLabel("Этаж:");
-    JTextField floorField = new JTextField(String.valueOf(bookPlace.getFloor()), 10);
-    inputPanel.add(floorLabel, gbc);
-    gbc.gridx++;
-    inputPanel.add(floorField, gbc);
-
-    JLabel bookcaseLabel = new JLabel("Шкаф:");
-    JTextField bookcaseField = new JTextField(String.valueOf(bookPlace.getBookcase()), 10);
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(bookcaseLabel, gbc);
-    gbc.gridx++;
-    inputPanel.add(bookcaseField, gbc);
-
-    JLabel shelfLabel = new JLabel("Полка:");
-    JTextField shelfField = new JTextField(String.valueOf(bookPlace.getShelf()), 10);
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(shelfLabel, gbc);
-    gbc.gridx++;
-    inputPanel.add(shelfField, gbc);
-
-    int result = JOptionPane.showConfirmDialog(this, inputPanel, "Изменить место книги",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-    if (result == JOptionPane.OK_OPTION) {
-      try {
-        int newFloor = Integer.parseInt(floorField.getText());
-        int newBookcase = Integer.parseInt(bookcaseField.getText());
-        int newShelf = Integer.parseInt(shelfField.getText());
-
-        BookPlace newBookPlace = new BookPlace(newFloor, newBookcase, newShelf);
-
-        // Проверка наличия комбинации места книги в базе данных
-        if (libraryDB.isBookPlaceExists(newBookPlace)) {
-          JOptionPane.showMessageDialog(this,
-              "Место с такой комбинацией этажа, шкафа и полки уже существует!");
-        } else {
-          selectedBookPlace.setFloor(newFloor);
-          selectedBookPlace.setBookcase(newBookcase);
-          selectedBookPlace.setShelf(newShelf);
-
-          updateBookPlace(selectedBookPlace);
-        }
-      } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Ошибка при изменении места книги: " + e.getMessage());
-      }
-    }
-  }
-
   private void getBooksByPlace() {
     JPanel inputPanel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
@@ -476,37 +488,13 @@ public class LibraryDBApp extends JFrame {
         displayBooks(books);
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод!");
+            INVALID_INPUT_MESSAGE);
       }
     }
   }
 
   private void getPublishersOnShelf() {
-    JPanel inputPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.WEST;
-    gbc.insets = new Insets(5, 5, 5, 5);
-
-    inputPanel.add(new JLabel("Этаж:"), gbc);
-    gbc.gridx++;
-    JTextField floorField = new JTextField(10);
-    inputPanel.add(floorField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(new JLabel("Шкаф:"), gbc);
-    gbc.gridx++;
-    JTextField bookcaseField = new JTextField(10);
-    inputPanel.add(bookcaseField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(new JLabel("Полка:"), gbc);
-    gbc.gridx++;
-    JTextField shelfField = new JTextField(10);
-    inputPanel.add(shelfField, gbc);
+    JPanel inputPanel = createInputPanel();
 
     int result = JOptionPane.showConfirmDialog(this, inputPanel, "Показать издательства на полке",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -520,7 +508,7 @@ public class LibraryDBApp extends JFrame {
         displayPublishersTable(publishers);
       } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this,
-            "Неверный ввод!");
+            INVALID_INPUT_MESSAGE);
       }
     }
   }
@@ -657,7 +645,9 @@ public class LibraryDBApp extends JFrame {
     return new DefaultTableModel(data, columnNames);
   }
 
-  private void getHeaviestBook() {
+  private void getBookByType(boolean isHeaviest) {
+    String title = isHeaviest ? "Показать самую тяжелую книгу" : "Показать самую легкую книгу";
+
     JPanel inputPanel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
@@ -665,75 +655,43 @@ public class LibraryDBApp extends JFrame {
     gbc.anchor = GridBagConstraints.WEST;
     gbc.insets = new Insets(5, 5, 5, 5);
 
-    inputPanel.add(new JLabel("Этаж:"), gbc);
+    inputPanel.add(new JLabel(LABEL_FLOOR), gbc);
     gbc.gridx++;
-    JTextField floorField = new JTextField(10);
-    inputPanel.add(floorField, gbc);
+    JTextField floorTextField = new JTextField(10);
+    inputPanel.add(floorTextField, gbc);
 
     gbc.gridx = 0;
     gbc.gridy++;
-    inputPanel.add(new JLabel("Шкаф:"), gbc);
+    inputPanel.add(new JLabel(LABEL_BOOKCASE), gbc);
     gbc.gridx++;
-    JTextField bookcaseField = new JTextField(10);
-    inputPanel.add(bookcaseField, gbc);
+    JTextField bookcaseTextField = new JTextField(10);
+    inputPanel.add(bookcaseTextField, gbc);
 
-    int result = JOptionPane.showConfirmDialog(this, inputPanel, "Показать самую тяжелую книгу",
+    int result = JOptionPane.showConfirmDialog(this, inputPanel, title,
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
     if (result == JOptionPane.OK_OPTION) {
       try {
-        int bookPlaceId = Integer.parseInt(floorField.getText());
-        int bookcase = Integer.parseInt(bookcaseField.getText());
-        Book heaviestBook = libraryDB.getHeaviestBookInBookcase(bookPlaceId, bookcase);
-        if (heaviestBook != null) {
+        int bookPlaceId = Integer.parseInt(floorTextField.getText());
+        int bookcase = Integer.parseInt(bookcaseTextField.getText());
+        Book book = isHeaviest ? libraryDB.getHeaviestBookInBookcase(bookPlaceId, bookcase)
+            : libraryDB.getLightestBookInBookcase(bookPlaceId, bookcase);
+        if (book != null) {
           List<Book> books = new ArrayList<>();
-          books.add(heaviestBook);
+          books.add(book);
           displayBooks(books);
         }
       } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this,
-            "Неверный ввод!");
+        JOptionPane.showMessageDialog(this, INVALID_INPUT_MESSAGE);
       }
     }
   }
 
+  private void getHeaviestBook() {
+    getBookByType(true);
+  }
+
   private void getLightestBook() {
-    JPanel inputPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.anchor = GridBagConstraints.WEST;
-    gbc.insets = new Insets(5, 5, 5, 5);
-
-    inputPanel.add(new JLabel("Этаж:"), gbc);
-    gbc.gridx++;
-    JTextField floorField = new JTextField(10);
-    inputPanel.add(floorField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    inputPanel.add(new JLabel("Шкаф:"), gbc);
-    gbc.gridx++;
-    JTextField bookcaseField = new JTextField(10);
-    inputPanel.add(bookcaseField, gbc);
-
-    int result = JOptionPane.showConfirmDialog(this, inputPanel, "Показать самую легкую книгу",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-    if (result == JOptionPane.OK_OPTION) {
-      try {
-        int bookPlaceId = Integer.parseInt(floorField.getText());
-        int bookcase = Integer.parseInt(bookcaseField.getText());
-        Book lightestBook = libraryDB.getLightestBookInBookcase(bookPlaceId, bookcase);
-        if (lightestBook != null) {
-          List<Book> books = new ArrayList<>();
-          books.add(lightestBook);
-          displayBooks(books);
-        }
-      } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this,
-            "Неверный ввод!");
-      }
-    }
+    getBookByType(false);
   }
 }
