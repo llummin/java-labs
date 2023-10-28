@@ -1,4 +1,4 @@
-package com.flock.lab7;
+package com.llummin.lab7;
 
 import java.io.*;
 

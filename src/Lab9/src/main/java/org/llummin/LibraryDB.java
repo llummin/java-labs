@@ -1,4 +1,4 @@
-package org.flock;
+package org.llummin;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

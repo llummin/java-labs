@@ -1,4 +1,4 @@
-package com.flock.lab8;
+package com.llummin.lab8;
 
 import static java.lang.System.*;
 

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<jsp:useBean id="data" class="com.flock.lab8.CalculationBean" scope="session"/>
+<jsp:useBean id="data" class="com.llummin.lab8.CalculationBean" scope="session"/>
 
 <!DOCTYPE html>
 <html lang="ru" xml:lang="ru">
